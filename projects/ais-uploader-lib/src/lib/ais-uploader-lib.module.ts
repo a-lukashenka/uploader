@@ -5,11 +5,13 @@ import { UploaderTypesPipe } from './pipes/uploader-enum.pipe';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { AisUploaderLibService } from './ais-uploader-lib.service';
+import { FileDropDirective } from './directives/file-drop.directive';
 
 @NgModule({
     declarations: [
         AisUploaderLibComponent,
         UploaderDirective,
+        FileDropDirective,
         UploaderTypesPipe,
     ],
     imports: [
@@ -19,6 +21,7 @@ import { AisUploaderLibService } from './ais-uploader-lib.service';
     exports: [
         AisUploaderLibComponent,
         UploaderDirective,
+        FileDropDirective,
     ],
     providers: [
         AisUploaderLibService,

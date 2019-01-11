@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UploaderConfig } from './models/uploader-config';
 import { Subscription } from 'rxjs';
 import { isPlatformServer } from '@angular/common';
@@ -10,6 +10,7 @@ import { UploaderTypesPipe } from './pipes/uploader-enum.pipe';
     selector: 'ais-uploader-ais-uploader-lib',
     templateUrl: './ais-uploader-lib.component.html',
     styleUrls: ['./ais-uploader-lib.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class AisUploaderLibComponent implements OnInit, OnDestroy {
     config: UploaderConfig;

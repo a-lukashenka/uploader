@@ -1,4 +1,8 @@
 <button>Upload</button>
 <div [uploader]="config" #uploaderTemplateVarible="uploader" clearUloader>s
-    <img [src]="uploaderTemplateVarible.instance.filePath">
+    <p clear>{{uploaderTemplateVarible.instance.fileName}}</p>
+</div>
+
+<div class="drop" ng2FileDrop>
+    drop here
 </div>

@@ -68,8 +68,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     private _handleClick(event): void {
         const attributes = Object.values(event.target.attributes).map(el => el['name']);
-        console.log(this._btnContainer.instance.fileName);
-        if (!!attributes.find(attr => attr == 'clearuloader') &&
+        if (!!attributes.find(attr => attr == 'clear') &&
             this._btnContainer.instance.fileName) {
             this._btnContainer.instance.clear();
             return;
