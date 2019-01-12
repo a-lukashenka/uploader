@@ -120,9 +120,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
             return;
         }
         this._preventAndStop(event);
-
-        console.log(event, transfer);
-        // this.instance.loadFile(transfer);
+        this.instance.loadFile({target: {files: transfer.files}});
     }
 
     protected _getTransfer(event: any): any {
@@ -146,6 +144,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
             return false;
         }
     }
+
     // DROP END
 
     private _setBtnContainer(): void {
