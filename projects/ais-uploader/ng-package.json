@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/ais-uploader-lib",
+  "dest": "../../dist/ais-uploader",
   "lib": {
     "entryFile": "src/public_api.ts"
   }

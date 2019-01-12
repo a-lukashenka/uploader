@@ -1,4 +1,4 @@
-<div class="drop" clear stop [uploader]="config" #uploaderTemplateVarible="uploader">Upload<p>{{uploaderTemplateVarible.fileName}}</p>
+<div class="drop" clear [uploader]="config" #uploaderTemplateVarible="uploader">Upload<p>{{uploaderTemplateVarible.fileName}}</p>
 </div>
-{{uploaderTemplateVarible.progress}}
-<button (click)="uploaderTemplateVarible.cancel()">Cancel</button>
+<div (click)="uploaderTemplateVarible.preventUploading()">Progress {{uploaderTemplateVarible.progress}}</div>
+<button (click)="uploaderTemplateVarible.preventUploading()">Cancel</button>

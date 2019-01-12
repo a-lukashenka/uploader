@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UploaderConfig } from 'ais-uploader-lib';
+import { UploaderConfig } from 'ais-uploader';
 
 
 @Component({

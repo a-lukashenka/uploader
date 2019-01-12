@@ -7,16 +7,16 @@ import { UploaderConfig } from './models/uploader-config';
 import { of, Subscription } from 'rxjs';
 import { isPlatformServer } from '@angular/common';
 import { DocumentFileType } from './models/uploader-item';
-import { AisUploaderLibService } from './ais-uploader-lib.service';
+import { AisUploaderService } from './ais-uploader.service';
 import { UploaderTypesPipe } from './pipes/uploader-enum.pipe';
 
 @Component({
-    selector: 'ais-uploader-ais-uploader-lib',
-    templateUrl: './ais-uploader-lib.component.html',
-    styleUrls: ['./ais-uploader-lib.component.scss'],
+    selector: 'ais-uploader',
+    templateUrl: './ais-uploader.component.html',
+    styleUrls: ['./ais-uploader.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class AisUploaderLibComponent implements OnInit, OnDestroy {
+export class AisUploaderComponent implements OnInit, OnDestroy {
     config: UploaderConfig;
     uploadingProgress: number;
     @Output() onChange: EventEmitter<any> = new EventEmitter();
@@ -31,7 +31,7 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
 
     constructor(
         @Inject(PLATFORM_ID) platformId: string,
-        private uploderService: AisUploaderLibService,
+        private uploderService: AisUploaderService,
         private uploaderEnum: UploaderTypesPipe,
     ) {
         if (isPlatformServer(platformId) || typeof (<any>window).MouseEvent === 'function') {

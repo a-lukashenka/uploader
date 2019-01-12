@@ -5,7 +5,7 @@ import { last, map } from 'rxjs/operators';
 import { UploaderConfig } from './models/uploader-config';
 
 @Injectable()
-export class AisUploaderLibService {
+export class AisUploaderService {
     private _uploadingProgress$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
     get uploadingProgress(): Observable<number> {

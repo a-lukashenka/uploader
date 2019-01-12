@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { AisUploaderLibModule } from 'ais-uploader-lib';
+import { AisUploaderModule } from 'ais-uploader';
 
 @NgModule({
   declarations: [
@@ -10,7 +10,7 @@ import { AisUploaderLibModule } from 'ais-uploader-lib';
   ],
   imports: [
     BrowserModule,
-    AisUploaderLibModule.forRoot(),
+    AisUploaderModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],

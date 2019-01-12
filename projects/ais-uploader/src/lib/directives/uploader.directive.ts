@@ -5,7 +5,7 @@ import {
 import { UploaderConfig } from '../models/uploader-config';
 import { Subscription } from 'rxjs';
 import { Output, EventEmitter } from '@angular/core';
-import { AisUploaderLibComponent } from '../ais-uploader-lib.component';
+import { AisUploaderComponent } from '../ais-uploader.component';
 
 @Directive({
     selector: '[uploader]',
@@ -60,7 +60,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
     }
 
     // uploader instance
-    get instance(): AisUploaderLibComponent {
+    get instance(): AisUploaderComponent {
         return this._btnContainer.instance;
     }
 
@@ -148,7 +148,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
     // DROP END
 
     private _setBtnContainer(): void {
-        const componentFactory = this.factory.resolveComponentFactory(AisUploaderLibComponent);
+        const componentFactory = this.factory.resolveComponentFactory(AisUploaderComponent);
         this._btnContainer = this.viewContainerRef.createComponent(componentFactory);
         this._btnContainer.instance.config = this.config;
         this._clickFn = this.renderer.listen(this.ref.nativeElement, 'click', (e) => this._handleClick(e));
