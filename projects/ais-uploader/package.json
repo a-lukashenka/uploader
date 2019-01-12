@@ -1,8 +1,23 @@
 {
-  "name": "ais-uploader",
-  "version": "0.0.1",
-  "peerDependencies": {
-    "@angular/common": "^7.0.0",
-    "@angular/core": "^7.0.0"
-  }
+    "name": "ais-uploader",
+    "version": "0.0.2",
+    "description": "A simple uploader library for Angular 2+",
+    "keywords": [
+        "Angular 2",
+        "Angular 4",
+        "Angular 5",
+        "Angular 6",
+        "Angular 7",
+        "Uploader",
+        "Upload"
+    ],
+    "license": "SEE LICENSE IN LICENSE",
+    "repository": {
+        "type": "git",
+        "url": "https://Razor164@bitbucket.org/Razor164/ais-uploader.git"
+    },
+    "peerDependencies": {
+        "@angular/common": "^7.0.0",
+        "@angular/core": "^7.0.0"
+    }
 }
