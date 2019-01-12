@@ -1,8 +1,9 @@
 .drop {
-    width: 100px;
-    height: 100px;
-    border: 1px dotted;
+    width: 500px;
+    height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 2px dashed;
+    cursor: pointer;
 }

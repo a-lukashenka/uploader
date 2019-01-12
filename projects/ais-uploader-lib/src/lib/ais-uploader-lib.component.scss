@@ -3,15 +3,27 @@
 }
 
 @keyframes blink {
-    0% { box-shadow: 0 0 15px red; }
-    50% { box-shadow: none; }
-    100% { box-shadow: 0 0 15px red; }
+    0% {
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .24), 0 0 2px rgba(0, 0, 0, .12);
+    }
+    50% {
+        box-shadow: none;
+    }
+    100% {
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .24), 0 0 2px rgba(0, 0, 0, .12);
+    }
 }
 
 @-webkit-keyframes blink {
-    0% { box-shadow: 0 0 15px red; }
-    50% { box-shadow: 0 0 0; }
-    100% { box-shadow: 0 0 15px red; }
+    0% {
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .24), 0 0 2px rgba(0, 0, 0, .12);
+    }
+    50% {
+        box-shadow: 0 0 0;
+    }
+    100% {
+        box-shadow: 0 2px 2px rgba(0, 0, 0, .24), 0 0 2px rgba(0, 0, 0, .12);
+    }
 }
 
 .blink {

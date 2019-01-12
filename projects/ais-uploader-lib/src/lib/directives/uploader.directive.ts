@@ -1,6 +1,6 @@
 import {
     ComponentFactoryResolver, Directive,
-    ElementRef, Input, OnDestroy, OnInit, Renderer2, ViewContainerRef,
+    ElementRef, HostListener, Input, OnDestroy, OnInit, Renderer2, ViewContainerRef,
 } from '@angular/core';
 import { UploaderConfig } from '../models/uploader-config';
 import { Subscription } from 'rxjs';
@@ -42,6 +42,13 @@ export class UploaderDirective implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        if (
+            !this.config.apiUrl ||
+            !this.config.supportedFormats
+        ) {
+            this.onError.emit('Incorrect config!');
+            return;
+        }
         this._setBtnContainer();
     }
 
@@ -52,9 +59,94 @@ export class UploaderDirective implements OnInit, OnDestroy {
         }
     }
 
+    // uploader instance
     get instance(): AisUploaderLibComponent {
         return this._btnContainer.instance;
     }
+
+    // selected file name
+    get fileName(): string {
+        return this.instance.fileName;
+    }
+
+    // info message
+    get tooltipMessage(): string {
+        return this.instance.tooltipMessage;
+    }
+
+    // get progress
+    get progress(): number {
+        return this.instance.uploadingProgress;
+    }
+
+    // remove file from uploader
+    clear(emit: boolean = true): void {
+        this.instance.clear(emit);
+    }
+
+    // cancel uploading
+    preventUploading(): void {
+        this.instance.preventUploading();
+    }
+
+    // DROP
+    @HostListener('dragover', ['$event'])
+    onDragOver(event: any): void {
+        console.log('DROP_OVER', event);
+        const transfer = this._getTransfer(event);
+        if (!this._haveFiles(transfer.types)) {
+            return;
+        }
+        transfer.dropEffect = 'copy';
+        this._preventAndStop(event);
+    }
+
+    @HostListener('dragleave', ['$event'])
+    onDragLeave(event: any): any {
+        console.log('DRAG_LEAVE', event);
+        if ((this as any).element) {
+            if (event.currentTarget === (this as any).element[0]) {
+                return;
+            }
+        }
+        this._preventAndStop(event);
+    }
+
+    @HostListener('drop', ['$event'])
+    onDrop(event: any): void {
+        console.log('DROP');
+        const transfer = this._getTransfer(event);
+        if (!transfer) {
+            return;
+        }
+        this._preventAndStop(event);
+
+        console.log(event, transfer);
+        // this.instance.loadFile(transfer);
+    }
+
+    protected _getTransfer(event: any): any {
+        return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer; // jQuery fix;
+    }
+
+    protected _preventAndStop(event: any): any {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    protected _haveFiles(types: any): any {
+        if (!types) {
+            return false;
+        }
+        if (types.indexOf) {
+            return types.indexOf('Files') !== -1;
+        } else if (types.contains) {
+            return types.contains('Files');
+        } else {
+            return false;
+        }
+    }
+    // DROP END
 
     private _setBtnContainer(): void {
         const componentFactory = this.factory.resolveComponentFactory(AisUploaderLibComponent);
@@ -69,8 +161,13 @@ export class UploaderDirective implements OnInit, OnDestroy {
     private _handleClick(event): void {
         const attributes = Object.values(event.target.attributes).map(el => el['name']);
         if (!!attributes.find(attr => attr == 'clear') &&
-            this._btnContainer.instance.fileName) {
-            this._btnContainer.instance.clear();
+            this.fileName && !this.instance.uploadingProgress) {
+            this.clear();
+            return;
+        }
+        if (!!attributes.find(attr => attr == 'stop') &&
+            this.fileName && this.instance.uploadingProgress) {
+            this.preventUploading();
             return;
         }
         this._btnContainer.instance.select();

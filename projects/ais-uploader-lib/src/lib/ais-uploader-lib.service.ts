@@ -18,6 +18,7 @@ export class AisUploaderLibService {
     }
 
     upload(file: File, config: UploaderConfig): Observable<any> {
+        this._uploadingProgress$.next(0);
         const formData = new FormData();
         formData.append('file', file);
         return this.http.post(`${config.apiUrl}`, formData, {
@@ -51,6 +52,6 @@ export class AisUploaderLibService {
     }
 
     resetProgress(): void {
-        this._uploadingProgress$.next(0);
+
     }
 }

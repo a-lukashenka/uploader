@@ -1,8 +1,4 @@
-<button>Upload</button>
-<div [uploader]="config" #uploaderTemplateVarible="uploader" clearUloader>s
-    <p clear>{{uploaderTemplateVarible.instance.fileName}}</p>
+<div class="drop" clear stop [uploader]="config" #uploaderTemplateVarible="uploader">Upload<p>{{uploaderTemplateVarible.fileName}}</p>
 </div>
-
-<div class="drop" ng2FileDrop>
-    drop here
-</div>
+{{uploaderTemplateVarible.progress}}
+<button (click)="uploaderTemplateVarible.cancel()">Cancel</button>

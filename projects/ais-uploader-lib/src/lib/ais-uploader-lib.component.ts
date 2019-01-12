@@ -1,6 +1,10 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    Component, EventEmitter, Inject,
+    OnDestroy, OnInit, Output, PLATFORM_ID,
+    ViewChild, ViewEncapsulation,
+} from '@angular/core';
 import { UploaderConfig } from './models/uploader-config';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { isPlatformServer } from '@angular/common';
 import { DocumentFileType } from './models/uploader-item';
 import { AisUploaderLibService } from './ais-uploader-lib.service';
@@ -14,7 +18,6 @@ import { UploaderTypesPipe } from './pipes/uploader-enum.pipe';
 })
 export class AisUploaderLibComponent implements OnInit, OnDestroy {
     config: UploaderConfig;
-    isPreview = false;
     uploadingProgress: number;
     @Output() onChange: EventEmitter<any> = new EventEmitter();
     @Output() onProgress: EventEmitter<number> = new EventEmitter();
@@ -24,6 +27,7 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
     private _file: File;
     private _allowedExtensions: string[] = [];
     private _progressSub$: Subscription;
+    private _uploaderSub$: Subscription;
 
     constructor(
         @Inject(PLATFORM_ID) platformId: string,
@@ -53,17 +57,25 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
         if (this._progressSub$) {
             this._progressSub$.unsubscribe();
         }
+        if (this._uploaderSub$) {
+            this._uploaderSub$.unsubscribe();
+        }
     }
 
     get fileName(): string {
-        if (!this._file) return '';
+        if (!this._file) {
+            return '';
+        }
         return this._file.name;
     }
 
     get tooltipMessage(): string {
-        if (this.config) return '';
-        const formats = this.uploaderEnum.transform(this.config.supportedFormats)
-        return `Supported formats are ${formats || 'All formats'}. Max. size is ${this.config.maxSize}Mb`;
+        if (!this.config.supportedFormats.length) {
+            return `Max. size is ${this.config.maxSize ? this.config.maxSize : 'unlimited'}Mb`;
+        }
+        const formats = this.uploaderEnum.transform(this.config.supportedFormats);
+        return `Supported formats are ${formats || 'All formats'}. Max. size is ${this.config.maxSize ?
+            this.config.maxSize : 'unlimited'}Mb`;
     }
 
     select(): void {
@@ -78,7 +90,6 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
 
     clear(emit: boolean = true): void {
         this._file = undefined;
-        this.isPreview = false;
         this.fileSelector.nativeElement.value = '';
         if (emit) {
             this.onChange.emit('');
@@ -86,6 +97,7 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
     }
 
     async loadFile(event): Promise<any> {
+        console.log(event);
         const _file = event.target.files[0];
         if (!_file || !this.config) {
             this.throwError('Uploader error');
@@ -116,40 +128,41 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
             }
             return;
         }
-        if (this.config.isMakePreview) {
+        if (!this.config.isPreviewDisabled) {
             this._makePreview(event.target.files[0]);
         }
     }
 
+    // upload to server
     upload(): Promise<any> {
         if (this._progressSub$) {
             this._progressSub$.unsubscribe();
         }
-        try {
-            if (!this._file) {
-                return Promise.reject(new Error('File doesnt\'t exist'));
-            }
-            this._onLoaderSub();
-            const cancel = new Promise(cancel => this.cancel = cancel);
-            return Promise.resolve()
-                .then(() => {
-                    const p = cancel.then((() => Promise.reject(this.stop())));
+        this._onLoaderSub();
+        return new Promise(resolve => {
+            this._uploaderSub$ = this.uploderService.upload(this._file, this.config).subscribe(res => {
+                resolve(res);
+            }, err => {
+                this.onError.emit('Uploding error');
+                this.preventUploading();
+                resolve(undefined);
+            });
+        });
+    }
 
-                    return Promise.race([this.uploderService.upload(this._file, this.config).toPromise(),
-                        p]);
-                })
-                .catch(e => console.log(e));
-        } catch (error) {
-            return Promise.reject(new Error('Uploading error'));
+    // cancel current uploading
+    preventUploading(): void {
+        if (!this.uploadingProgress) return;
+        if (this._progressSub$) {
+            this._progressSub$.unsubscribe();
         }
+        if (this._uploaderSub$) {
+            this._uploaderSub$.unsubscribe();
+        }
+        this.onProgress.emit(0);
+        this.uploadingProgress = 0;
+        this.clear();
     }
-
-    stop(): string {
-        return 'The operation was canceled.';
-    }
-
-    cancel = function (): void {
-    };
 
     private _onLoaderSub(): void {
         this._progressSub$ = this.uploderService.uploadingProgress
@@ -162,7 +175,6 @@ export class AisUploaderLibComponent implements OnInit, OnDestroy {
     private _makePreview(_file: File): void {
         const reader = new FileReader();
         reader.onload = (event: any) => {
-            this.isPreview = true;
             this.onChange.emit(event.target.result);
         };
         reader.readAsDataURL(_file);
