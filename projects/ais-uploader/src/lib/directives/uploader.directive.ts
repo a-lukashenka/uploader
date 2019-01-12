@@ -61,38 +61,43 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     // uploader instance
     get instance(): AisUploaderComponent {
+        if (!this._btnContainer) return;
         return this._btnContainer.instance;
     }
 
     // selected file name
     get fileName(): string {
+        if (!this.instance) return;
         return this.instance.fileName;
     }
 
     // info message
     get tooltipMessage(): string {
+        if (!this.instance) return;
         return this.instance.tooltipMessage;
     }
 
     // get progress
     get progress(): number {
+        if (!this.instance) return;
         return this.instance.uploadingProgress;
     }
 
     // remove file from uploader
     clear(emit: boolean = true): void {
+        if (!this.instance) return;
         this.instance.clear(emit);
     }
 
     // cancel uploading
     preventUploading(): void {
+        if (!this.instance) return;
         this.instance.preventUploading();
     }
 
     // DROP
     @HostListener('dragover', ['$event'])
     onDragOver(event: any): void {
-        console.log('DROP_OVER', event);
         const transfer = this._getTransfer(event);
         if (!this._haveFiles(transfer.types)) {
             return;
@@ -103,7 +108,6 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     @HostListener('dragleave', ['$event'])
     onDragLeave(event: any): any {
-        console.log('DRAG_LEAVE', event);
         if ((this as any).element) {
             if (event.currentTarget === (this as any).element[0]) {
                 return;
@@ -114,7 +118,7 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     @HostListener('drop', ['$event'])
     onDrop(event: any): void {
-        console.log('DROP');
+        if (!this.config.isDropAllowed) return;
         const transfer = this._getTransfer(event);
         if (!transfer) {
             return;

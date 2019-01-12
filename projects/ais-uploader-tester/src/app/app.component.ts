@@ -10,6 +10,6 @@ import { UploaderConfig } from 'ais-uploader';
 export class AppComponent {
     config: UploaderConfig = new UploaderConfig(
         'http://jet-api.gml.aisnovations.com/api/uploader/public',
-        [], false, false,
-        50, false, false);
+        [], false, true,
+        50, true, false);
 }

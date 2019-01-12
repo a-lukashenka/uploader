@@ -4,7 +4,7 @@ export class UploaderConfig {
     apiUrl: string;
     supportedFormats: DocumentFileType[];
     isDropAllowed?: boolean;
-    isMulti?: false;
+    isMultiple?: boolean;
     isPreviewDisabled?: boolean;
     maxSize?: number;
     isAutoupload?: boolean;
@@ -12,7 +12,7 @@ export class UploaderConfig {
     constructor(
         apiUrl: string,
         formats: DocumentFileType[] = [],
-        isMulti: boolean = false,
+        isMultiple: boolean = false,
         isDropAllowed: boolean = false,
         maxSize: number = 20,
         isAutoupload: boolean = false,
@@ -23,7 +23,7 @@ export class UploaderConfig {
         this.isPreviewDisabled = isPreviewDisabled;
         this.maxSize = maxSize;
         this.isAutoupload = isAutoupload;
-        this.isMulti = this.isMulti;
-        this.isDropAllowed = this.isAutoupload;
+        this.isMultiple = isMultiple;
+        this.isDropAllowed = isDropAllowed;
     }
 }
