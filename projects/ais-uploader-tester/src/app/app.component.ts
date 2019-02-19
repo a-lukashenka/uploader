@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { UploaderConfig } from 'ais-uploader';
-
+import { Component, ViewChild } from '@angular/core';
+import { DocumentFileType, UploaderConfig, UploaderDirective } from 'ais-uploader';
 
 @Component({
     selector: 'app-root',
@@ -8,8 +7,19 @@ import { UploaderConfig } from 'ais-uploader';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+    @ViewChild('uploaderTemplateVarible') uploader: UploaderDirective;
+    data;
     config: UploaderConfig = new UploaderConfig(
         'http://jet-api.gml.aisnovations.com/api/uploader/public',
-        [], false, true,
-        50, true, false);
+        [DocumentFileType.JPEG, DocumentFileType.JPG], true, true,
+        0, false, false);
+
+    constructor() {
+        // this.config.headers = new HttpHeaders({
+        //     Authorization: 'Bearer Token',
+        // });
+    }
+    async upload(): Promise<void> {
+        const path = await this.uploader.upload();
+    }
 }

@@ -1,10 +1,6 @@
-import {
-    Component, EventEmitter, Inject,
-    OnDestroy, OnInit, Output, PLATFORM_ID,
-    ViewChild, ViewEncapsulation,
-} from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UploaderConfig } from './models/uploader-config';
-import { of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { isPlatformServer } from '@angular/common';
 import { DocumentFileType } from './models/uploader-item';
 import { AisUploaderService } from './ais-uploader.service';
@@ -25,6 +21,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
 
     @ViewChild('fileSelector') fileSelector;
     private _file: File;
+    private _files: File[];
     private _allowedExtensions: string[] = [];
     private _progressSub$: Subscription;
     private _uploaderSub$: Subscription;
@@ -62,22 +59,36 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
         }
     }
 
-    get fileName(): string {
+    // return file name or arr file names if isMultiple: true
+    get fileName(): string | string[] {
+        if (this.config.isMultiple) {
+            return this.filesNames;
+        }
         if (!this._file) {
             return '';
         }
         return this._file.name;
     }
 
+    // return arr file names if isMultiple: true
+    get filesNames(): string[] {
+        if (!this._files || !this._files.length) {
+            return undefined;
+        }
+        return this._files.map(file => file.name);
+    }
+
+    // return info message
     get tooltipMessage(): string {
         if (!this.config.supportedFormats.length) {
-            return `Max. size is ${this.config.maxSize ? this.config.maxSize : 'unlimited'}Mb`;
+            return `Max. size is ${this.config.maxSize ? this.config.maxSize : 'unlimited'} Mb`;
         }
         const formats = this.uploaderEnum.transform(this.config.supportedFormats);
         return `Supported formats are ${formats || 'All formats'}. Max. size is ${this.config.maxSize ?
-            this.config.maxSize : 'unlimited'}Mb`;
+            this.config.maxSize : 'unlimited'} Mb`;
     }
 
+    // open selction window
     select(): void {
         let event: any;
         if (typeof (<any>window).MouseEvent === 'function') {
@@ -88,8 +99,15 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
         this.fileSelector.nativeElement.dispatchEvent(event);
     }
 
+    // remove file from files arr
+    delete(i: number): void {
+        this._files.splice(i, 1);
+    }
+
+    // remove file or all files
     clear(emit: boolean = true): void {
         this._file = undefined;
+        this._files = undefined;
         this.fileSelector.nativeElement.value = '';
         if (emit) {
             this.onChange.emit('');
@@ -97,40 +115,37 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
     }
 
     async loadFile(event): Promise<any> {
-        console.log(event);
-        const _file = event.target.files[0];
-        if (!_file || !this.config) {
-            this.throwError('Uploader error');
-            return;
+        if (this.config.isMultiple) {
+            const _files = event.target.files;
+            for (const file of _files) {
+                const isValid = this.validate(file);
+                if (!isValid) {
+                    return;
+                }
+            }
+            this._files = [..._files];
+        } else {
+            const _file = event.target.files[0];
+            const isValid = this.validate(_file);
+            if (!isValid) {
+                return;
+            }
+            this._file = _file;
         }
-        if (this.config.maxSize &&
-            _file.size / 1024 / 1024 > this.config.maxSize) {
-            this.throwError(`File size should be no more than ${this.config.maxSize}Mb`);
-            return;
-        }
-        if (this.config.supportedFormats.length && _file.type &&
-            !this.config.supportedFormats.includes(_file.type)) {
-            this.throwError(`Unsupported file format`);
-            return;
-        }
-        if (this.config.supportedFormats.length && !_file.type &&
-            !this._validateFormat(_file.name)) {
-            this.throwError(`Unsupported file format`);
-            return;
-        }
-        this._file = _file;
         if (this.config.isAutoupload) {
             try {
-                const path = await this.upload();
-                this.onChange.emit(path);
+                const res = await this.upload();
+                this.onChange.emit(res);
             } catch (e) {
                 this.onError.emit(e);
             }
             return;
         }
         if (!this.config.isPreviewDisabled) {
-            this._makePreview(event.target.files[0]);
+            this._makePreview();
+            return;
         }
+        this.onChange.emit(this._file.name);
     }
 
     // upload to server
@@ -139,20 +154,34 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
             this._progressSub$.unsubscribe();
         }
         this._onLoaderSub();
-        return new Promise(resolve => {
-            this._uploaderSub$ = this.uploderService.upload(this._file, this.config).subscribe(res => {
-                resolve(res);
-            }, err => {
-                this.onError.emit('Uploding error');
-                this.preventUploading();
-                resolve(undefined);
+        if (!this.config.isMultiple) {
+            return new Promise(resolve => {
+                this._uploaderSub$ = this.uploderService.upload(this._file, this.config).subscribe(res => {
+                    resolve(res);
+                }, err => {
+                    this.onError.emit('Uploding error');
+                    this.preventUploading();
+                    resolve(undefined);
+                });
             });
-        });
+        } else {
+            return new Promise(resolve => {
+                this._uploaderSub$ = this.uploderService.uploadMultiple(this._files, this.config).subscribe(res => {
+                    resolve(res);
+                }, err => {
+                    this.onError.emit('Uploding error');
+                    this.preventUploading();
+                    resolve(undefined);
+                });
+            });
+        }
     }
 
     // cancel current uploading
     preventUploading(): void {
-        if (!this.uploadingProgress) return;
+        if (!this.uploadingProgress) {
+            return;
+        }
         if (this._progressSub$) {
             this._progressSub$.unsubscribe();
         }
@@ -164,6 +193,29 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
         this.clear();
     }
 
+    private validate(file): boolean {
+        if (!file || !this.config) {
+            this.throwError('Uploader error');
+            return false;
+        }
+        if (this.config.maxSize &&
+            file.size / 1024 / 1024 > this.config.maxSize) {
+            this.throwError(`File size should be no more than ${this.config.maxSize}Mb`);
+            return false;
+        }
+        if (this.config.supportedFormats.length && file.type &&
+            !this.config.supportedFormats.includes(file.type)) {
+            this.throwError(`Unsupported file format`);
+            return false;
+        }
+        if (this.config.supportedFormats.length && !file.type &&
+            !this._validateFormat(file.name)) {
+            this.throwError(`Unsupported file format`);
+            return false;
+        }
+        return true;
+    }
+
     private _onLoaderSub(): void {
         this._progressSub$ = this.uploderService.uploadingProgress
             .subscribe(progress => {
@@ -172,12 +224,26 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
             });
     }
 
-    private _makePreview(_file: File): void {
-        const reader = new FileReader();
-        reader.onload = (event: any) => {
-            this.onChange.emit(event.target.result);
-        };
-        reader.readAsDataURL(_file);
+    private _makePreview(): void {
+        if (!this.config.isMultiple) {
+            const reader = new FileReader();
+            reader.onload = (event: any) => {
+                this.onChange.emit(event.target.result);
+            };
+            reader.readAsDataURL(this._file);
+        } else {
+            const dataArr = [];
+            for (let i = 0; i < this._files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = (event: any) => {
+                    dataArr[i] = (event.target.result);
+                };
+                reader.readAsDataURL(this._files[i]);
+                if (i == this._files.length - 1) {
+                    this.onChange.emit(dataArr);
+                }
+            }
+        }
     }
 
     private _validateFormat(name: string): boolean {
@@ -190,7 +256,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
 
     private throwError(message: string): void {
         this.onError.emit(message);
-        this._file = undefined;
+        this.fileSelector.nativeElement.value = '';
     }
 
     private _generateAllowedExtensions(): void {
@@ -252,6 +318,12 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
                     break;
                 case DocumentFileType.TIFF:
                     this._allowedExtensions.push('tiff');
+                    break;
+                case DocumentFileType.CSV:
+                    this._allowedExtensions.push('csv');
+                    break;
+                case DocumentFileType.MSCSV:
+                    this._allowedExtensions.push('csv');
                     break;
                 default:
                     break;

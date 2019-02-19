@@ -85,11 +85,14 @@ export interface UploaderConfig {    you can import { UploaderConfig } from 'ais
       isPreviewDisabled?: boolean; - creating preview data for img
       maxSize?: number;
       isAutoupload?: boolean;
+      headers?: HttpHeaders;  - = new HttpHeaders({});
+      responseType?: string = chose from namespase UploaderResponseType.
 }
 
 // Methods
-clear(emit: boolean: true): void - clear uploader;
+clear(emit: boolean: true): void - clear uploader; "if emit = true - clear emit onChange(undefined)"
 preventUploading(): void - stop uploading
+upload(): Promise<any> - start uploading
 
 // output events emitted by ais-uploader
     onChange: EventEmitter<any> = emit uploaded file or preview data
@@ -100,17 +103,7 @@ preventUploading(): void - stop uploading
 instance - uploader instance
 fileName - selected file name
 progress - uploading progress
-```
-
-## Upload Restrictions
-
-```ts
-onUploadOutput(output: UploadOutput): void {
-....
-} else if (output.type === 'rejected' && typeof output.file !== 'undefined') {
-  // console.log(output.file.name + ' rejected');
-}
-...
+tooltipMessage - info obout size and input formats
 ```
 
 ## Example
@@ -132,21 +125,35 @@ export class AppHomeComponent {
         'http://api.com/upload',
         [DocumentFileType.PNG],
         ...);
+        OR
+  config: UploaderConfig = {
+      apiUrl: '',
+      supportedFormats: [],
+      isDropAllowed: true,
+      isPreviewDisabled: false;
+      maxSize: 5;
+      isAutoupload: true;
+      headers: new HttpHeaders({
+        Accept: 'application/json',
+        Authorization: 'Bearer token',
+      });
+      responseType: UploaderResponseType.TEXT,
+  };
   @ViewChild('uploader') uploader: UploaderDirective; if you want upload manualy
 
   constructor() {
   }
 
   async upload(): Promise<void> {
-    const path = await this.uploader.instant.upload(); - use .instant to manualy functionality
+    const path = await this.uploader.upload();
   }
 
   cancelUpload(): void {
-    this.uploader.instant.clear()
+    this.uploader.preventUploading()
   }
 
-  removeFile(id: string): void {
-    this.uploader.instant.clear()
+  removeFile(): void {
+    this.uploader.clear()
   }
 }
 ```
@@ -168,6 +175,12 @@ export class AppHomeComponent {
 <button type="button" class="start-upload-btn" (click)="uploader.clear()">
   Stop Upload
 </button>
+```
+
+### FOR SERVER
+```ts
+// POST controller
+const files = request.files.file;
 ```
 
 ### LICENCE

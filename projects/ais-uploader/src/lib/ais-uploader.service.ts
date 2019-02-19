@@ -18,11 +18,30 @@ export class AisUploaderService {
     }
 
     upload(file: File, config: UploaderConfig): Observable<any> {
+        if (!file) return null;
         this._uploadingProgress$.next(0);
         const formData = new FormData();
         formData.append('file', file);
         return this.http.post(`${config.apiUrl}`, formData, {
-            responseType: 'text',
+            headers: config.headers,
+            responseType: config.responseType,
+            reportProgress: true,
+            observe: 'events',
+        }).pipe(
+            map(event => this.getEventMessage(event)),
+            last(),
+        );
+    }
+
+    uploadMultiple(files: File[], config: UploaderConfig): Observable<any> {
+        if (!files || !files.length) return null;
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('file', file);
+        }
+        return this.http.post(`${config.apiUrl}`, formData, {
+            headers: config.headers,
+            responseType: config.responseType,
             reportProgress: true,
             observe: 'events',
         }).pipe(

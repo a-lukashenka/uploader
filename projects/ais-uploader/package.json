@@ -1,6 +1,6 @@
 {
     "name": "ais-uploader",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "A simple uploader library for Angular 2+",
     "keywords": [
         "Angular 2",
@@ -11,7 +11,7 @@
         "Uploader",
         "Upload"
     ],
-    "license": "SEE LICENSE IN LICENSE",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://Razor164@bitbucket.org/Razor164/ais-uploader.git"

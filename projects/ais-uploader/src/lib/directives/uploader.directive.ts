@@ -61,38 +61,66 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     // uploader instance
     get instance(): AisUploaderComponent {
-        if (!this._btnContainer) return;
+        if (!this._btnContainer) {
+            return;
+        }
         return this._btnContainer.instance;
     }
 
     // selected file name
-    get fileName(): string {
-        if (!this.instance) return;
+    get fileName(): string | string[] {
+        if (!this.instance) {
+            return;
+        }
         return this.instance.fileName;
     }
 
     // info message
     get tooltipMessage(): string {
-        if (!this.instance) return;
+        if (!this.instance) {
+            return;
+        }
         return this.instance.tooltipMessage;
     }
 
     // get progress
     get progress(): number {
-        if (!this.instance) return;
+        if (!this.instance) {
+            return;
+        }
         return this.instance.uploadingProgress;
+    }
+
+    // delete file from uploader
+    delete(index: number): void {
+        if (!this.instance) {
+            return;
+        }
+        this.instance.delete(index);
     }
 
     // remove file from uploader
     clear(emit: boolean = true): void {
-        if (!this.instance) return;
+        if (!this.instance) {
+            return;
+        }
         this.instance.clear(emit);
     }
 
     // cancel uploading
     preventUploading(): void {
-        if (!this.instance) return;
+        if (!this.instance) {
+            return;
+        }
         this.instance.preventUploading();
+    }
+
+    // start uploading
+    upload(): Promise<any> {
+        if (!this.instance) {
+            return;
+        }
+        return this.instance.upload();
     }
 
     // DROP
@@ -118,7 +146,9 @@ export class UploaderDirective implements OnInit, OnDestroy {
 
     @HostListener('drop', ['$event'])
     onDrop(event: any): void {
-        if (!this.config.isDropAllowed) return;
+        if (!this.config.isDropAllowed) {
+            return;
+        }
         const transfer = this._getTransfer(event);
         if (!transfer) {
             return;
