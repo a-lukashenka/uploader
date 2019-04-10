@@ -157,6 +157,8 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
         if (!this.config.isMultiple) {
             return new Promise(resolve => {
                 this._uploaderSub$ = this.uploderService.upload(this._file, this.config).subscribe(res => {
+                    this.onProgress.emit(0);
+                    this.uploadingProgress = 0;
                     resolve(res);
                 }, err => {
                     this.onError.emit('Uploding error');
@@ -167,6 +169,8 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
         } else {
             return new Promise(resolve => {
                 this._uploaderSub$ = this.uploderService.uploadMultiple(this._files, this.config).subscribe(res => {
+                    this.onProgress.emit(0);
+                    this.uploadingProgress = 0;
                     resolve(res);
                 }, err => {
                     this.onError.emit('Uploding error');
@@ -318,6 +322,18 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
                     break;
                 case DocumentFileType.TIFF:
                     this._allowedExtensions.push('tiff');
+                    break;
+                case DocumentFileType.WBMP:
+                    this._allowedExtensions.push('wbmp');
+                    break;
+                case DocumentFileType.WEBP:
+                    this._allowedExtensions.push('webp');
+                    break;
+                case DocumentFileType.SVG:
+                    this._allowedExtensions.push('svg');
+                    break;
+                case DocumentFileType.GIF:
+                    this._allowedExtensions.push('gif');
                     break;
                 case DocumentFileType.CSV:
                     this._allowedExtensions.push('csv');
