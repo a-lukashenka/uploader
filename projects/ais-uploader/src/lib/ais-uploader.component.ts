@@ -126,6 +126,9 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
             this._files = [..._files];
         } else {
             const _file = event.target.files[0];
+            if (!_file) {
+                return;
+            }
             const isValid = this.validate(_file);
             if (!isValid) {
                 return;

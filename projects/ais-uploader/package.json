@@ -1,7 +1,7 @@
 {
     "name": "ais-uploader",
-    "version": "1.0.1",
-    "description": "A simple uploader library for Angular 2+",
+    "version": "1.0.2",
+    "description": "Simple uploader library for Angular 2+",
     "keywords": [
         "Angular 2",
         "Angular 4",
