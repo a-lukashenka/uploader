@@ -209,7 +209,7 @@
         "no-debugger": false,
         "no-eval": false,
         "no-string-throw": true,
-        "no-namespace": true,
+        "no-namespace": false,
         "no-internal-module": true,
         "radix": false,
         "no-unused-expression": [

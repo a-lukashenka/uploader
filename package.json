@@ -1,14 +1,14 @@
 {
-    "name": "ais-uploader-lib",
+    "name": "ais-uploader",
     "version": "0.0.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve ais-uploader-tester",
         "build": "ng build",
-        "build:lib": "ng build ais-uploader-lib",
-        "test": "ng test",
-        "lint": "ng lint",
-        "e2e": "ng e2e"
+        "build:lib": "ng build ais-uploader",
+        "npm_pack": "cd dist/ais-uploader && npm pack",
+        "package": "npm run build:lib && npm run npm_pack",
+        "publish": "npm publish dist/ais-uploader"
     },
     "private": true,
     "dependencies": {

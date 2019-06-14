@@ -3,33 +3,33 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ais-uploader-lib": {
-      "root": "projects/ais-uploader-lib",
-      "sourceRoot": "projects/ais-uploader-lib/src",
+    "ais-uploader": {
+      "root": "projects/ais-uploader",
+      "sourceRoot": "projects/ais-uploader/src",
       "projectType": "library",
       "prefix": "ais-uploader",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ais-uploader-lib/tsconfig.lib.json",
-            "project": "projects/ais-uploader-lib/ng-package.json"
+            "tsConfig": "projects/ais-uploader/tsconfig.lib.json",
+            "project": "projects/ais-uploader/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ais-uploader-lib/src/test.ts",
-            "tsConfig": "projects/ais-uploader-lib/tsconfig.spec.json",
-            "karmaConfig": "projects/ais-uploader-lib/karma.conf.js"
+            "main": "projects/ais-uploader/src/test.ts",
+            "tsConfig": "projects/ais-uploader/tsconfig.spec.json",
+            "karmaConfig": "projects/ais-uploader/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ais-uploader-lib/tsconfig.lib.json",
-              "projects/ais-uploader-lib/tsconfig.spec.json"
+              "projects/ais-uploader/tsconfig.lib.json",
+              "projects/ais-uploader/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -166,5 +166,5 @@
       }
     }
   },
-  "defaultProject": "ais-uploader-lib"
+  "defaultProject": "ais-uploader"
 }

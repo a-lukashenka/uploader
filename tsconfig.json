@@ -18,11 +18,11 @@
       "dom"
     ],
     "paths": {
-      "ais-uploader-lib": [
-        "dist/ais-uploader-lib"
+      "ais-uploader": [
+        "dist/ais-uploader"
       ],
-      "ais-uploader-lib/*": [
-        "dist/ais-uploader-lib/*"
+      "ais-uploader/*": [
+        "dist/ais-uploader/*"
       ]
     }
   }

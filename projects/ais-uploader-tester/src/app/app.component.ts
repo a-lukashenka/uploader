@@ -1,37 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { UploaderConfig } from 'ais-uploader-lib';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { log } from 'util';
+import { Component, ViewChild } from '@angular/core';
+import { DocumentFileType, UploaderConfig, UploaderDirective } from 'ais-uploader';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
+    styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-    config: UploaderConfig = new UploaderConfig('http://jet-api.gml.aisnovations.com/api/uploader/public');
+export class AppComponent {
+    @ViewChild('uploaderTemplateVarible') uploader: UploaderDirective;
+    data;
+    config: UploaderConfig = new UploaderConfig(
+        'http://jet-api.gml.aisnovations.com/api/uploader/public',
+        [DocumentFileType.JPEG, DocumentFileType.JPG], true, true,
+        0, false, false);
 
-    async ngOnInit(): Promise<any> {
-        console.log(await this.upload());
+    constructor() {
+        // this.config.headers = new HttpHeaders({
+        //     Authorization: 'Bearer Token',
+        // });
     }
-
-    upload(): Promise<any> {
-        const cancel = new Promise(cancel => this.cancel = cancel);
-        return Promise.resolve()
-            .then(() => {
-                const p = cancel.then((() => Promise.reject(this.stop())));
-                return Promise.race([of('test').pipe(delay(3000)).toPromise(),
-                    p]);
-            })
-            .catch(e => console.log(e));
+    async upload(): Promise<void> {
+        const path = await this.uploader.upload();
     }
-
-    stop(): string {
-        return 'The operation was canceled.';
-    }
-
-    cancel = function (): void {
-    };
-
 }

@@ -1,14 +1,14 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { AisUploaderLibComponent } from './ais-uploader-lib.component';
+import { AisUploaderComponent } from './ais-uploader.component';
 import { UploaderDirective } from './directives/uploader.directive';
 import { UploaderTypesPipe } from './pipes/uploader-enum.pipe';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { AisUploaderLibService } from './ais-uploader-lib.service';
+import { AisUploaderService } from './ais-uploader.service';
 
 @NgModule({
     declarations: [
-        AisUploaderLibComponent,
+        AisUploaderComponent,
         UploaderDirective,
         UploaderTypesPipe,
     ],
@@ -17,20 +17,20 @@ import { AisUploaderLibService } from './ais-uploader-lib.service';
         HttpClientModule,
     ],
     exports: [
-        AisUploaderLibComponent,
+        AisUploaderComponent,
         UploaderDirective,
     ],
     providers: [
-        AisUploaderLibService,
+        AisUploaderService,
     ],
     entryComponents: [
-        AisUploaderLibComponent,
+        AisUploaderComponent,
     ],
 })
-export class AisUploaderLibModule {
+export class AisUploaderModule {
     static forRoot(): ModuleWithProviders {
         return {
-            ngModule: AisUploaderLibModule,
+            ngModule: AisUploaderModule,
             providers: [ ],
         };
     }

@@ -1,0 +1,2 @@
+<input id="uploader_lib" #fileSelector type="file" [accept]="config?.supportedFormats | uploaderTypes:true"
+       (change)="loadFile($event)">
