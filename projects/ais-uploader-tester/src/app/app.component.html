@@ -1,9 +1,8 @@
 <div class="drop" clear [uploader]="config" #uploaderTemplateVariable="uploader" (onChange)="data = $event">Click
 </div>
 <p>{{uploaderTemplateVariable.tooltipMessage}}</p>
-
+{{data | json}}
 <img *ngFor="let name of data; let i = index" (click)="uploaderTemplateVariable.delete(i)" [src]="name">
-
 
 <div (click)="uploaderTemplateVariable.preventUploading()">Progress {{uploaderTemplateVariable.progress}}</div>
 <button (click)="uploaderTemplateVariable.preventUploading()">Cancel</button>

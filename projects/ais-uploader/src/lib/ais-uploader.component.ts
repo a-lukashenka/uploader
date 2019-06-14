@@ -73,7 +73,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
     // return arr file names if isMultiple: true
     get filesNames(): string[] {
         if (!this._files || !this._files.length) {
-            return undefined;
+            return [];
         }
         return this._files.map(file => file.name);
     }
@@ -88,7 +88,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
             this.config.maxSize : 'unlimited'} Mb`;
     }
 
-    // open selction window
+    // open selection window
     select(): void {
         let event: any;
         if (typeof (<any>window).MouseEvent === 'function') {
@@ -116,14 +116,18 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
 
     async loadFile(event): Promise<any> {
         if (this.config.isMultiple) {
-            const _files = event.target.files;
-            for (const file of _files) {
+            const files = Object.values(event.target.files);
+            if (!files || !files.length) {
+                this._files = [];
+                return;
+            }
+            files.forEach((file: File) => {
                 const isValid = this.validate(file);
                 if (!isValid) {
                     return;
                 }
-            }
-            this._files = [..._files];
+                this._files = [...this._files, file];
+            });
         } else {
             const _file = event.target.files[0];
             if (!_file) {
@@ -135,7 +139,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
             }
             this._file = _file;
         }
-        if (this.config.isAutoupload) {
+        if (this.config.isAutoUpload) {
             try {
                 const res = await this.upload();
                 this.onChange.emit(res);

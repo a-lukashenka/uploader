@@ -11,7 +11,7 @@ export class AppComponent {
     data;
     config: UploaderConfig = new UploaderConfig(
         'http://jet-api.gml.aisnovations.com/api/uploader/public',
-        [DocumentFileType.JPEG, DocumentFileType.JPG], true, true,
+        [DocumentFileType.JPEG, DocumentFileType.JPG], false, true,
         0, false, false);
 
     constructor() {
