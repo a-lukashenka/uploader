@@ -8,7 +8,7 @@ export class UploaderConfig {
     isMultiple?: boolean;
     isPreviewDisabled?: boolean;
     maxSize?: number;
-    isAutoupload?: boolean;
+    isAutoUpload?: boolean;
     headers?: HttpHeaders;
     responseType?: any | string;
 
@@ -25,7 +25,7 @@ export class UploaderConfig {
         this.supportedFormats = formats;
         this.isPreviewDisabled = isPreviewDisabled;
         this.maxSize = maxSize;
-        this.isAutoupload = isAutoupload;
+        this.isAutoUpload = isAutoupload;
         this.isMultiple = isMultiple;
         this.isDropAllowed = isDropAllowed;
     }
