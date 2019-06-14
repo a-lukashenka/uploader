@@ -1,10 +1,10 @@
-<div class="drop" clear [uploader]="config" #uploaderTemplateVarible="uploader" (onChange)="data = $event">Upload
+<div class="drop" clear [uploader]="config" #uploaderTemplateVariable="uploader" (onChange)="data = $event">Click
 </div>
-<p>{{uploaderTemplateVarible.tooltipMessage}}</p>
+<p>{{uploaderTemplateVariable.tooltipMessage}}</p>
 
-<img *ngFor="let name of data; let i = index" (click)="uploaderTemplateVarible.delete(i)" [src]="name">
+<img *ngFor="let name of data; let i = index" (click)="uploaderTemplateVariable.delete(i)" [src]="name">
 
 
-<div (click)="uploaderTemplateVarible.preventUploading()">Progress {{uploaderTemplateVarible.progress}}</div>
-<button (click)="uploaderTemplateVarible.preventUploading()">Cancel</button>
+<div (click)="uploaderTemplateVariable.preventUploading()">Progress {{uploaderTemplateVariable.progress}}</div>
+<button (click)="uploaderTemplateVariable.preventUploading()">Cancel</button>
 <button (click)="upload()">Upload</button>

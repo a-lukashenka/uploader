@@ -7,7 +7,7 @@ import { DocumentFileType, UploaderConfig, UploaderDirective } from 'ais-uploade
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-    @ViewChild('uploaderTemplateVarible') uploader: UploaderDirective;
+    @ViewChild('uploaderTemplateVariable', {static: false}) uploader: UploaderDirective;
     data;
     config: UploaderConfig = new UploaderConfig(
         'http://jet-api.gml.aisnovations.com/api/uploader/public',

@@ -19,7 +19,7 @@ export class AisUploaderComponent implements OnInit, OnDestroy {
     @Output() onProgress: EventEmitter<number> = new EventEmitter();
     @Output() onError: EventEmitter<string> = new EventEmitter();
 
-    @ViewChild('fileSelector') fileSelector;
+    @ViewChild('fileSelector', {static: false}) fileSelector;
     private _file: File;
     private _files: File[];
     private _allowedExtensions: string[] = [];
