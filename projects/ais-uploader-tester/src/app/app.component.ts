@@ -8,7 +8,7 @@ import { DocumentFileType, UploaderConfig, UploaderDirective } from 'ais-uploade
 })
 export class AppComponent {
     @ViewChild('uploaderTemplateVariable', {static: false}) uploader: UploaderDirective;
-    data;
+    data: any;
     config: UploaderConfig = new UploaderConfig(
         'http://jet-api.gml.aisnovations.com/api/uploader/public',
         [DocumentFileType.JPEG, DocumentFileType.JPG], false, true,
